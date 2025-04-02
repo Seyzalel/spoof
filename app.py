@@ -1,123 +1,111 @@
-import os
-import sys
+import requests
 import time
-import random
+import threading
+import telebot
+from datetime import datetime
 
-ativos = [
-    "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD",
-    "USD/CHF", "NZD/USD", "EUR/GBP", "EUR/JPY", "GBP/JPY"
-]
+# === CONFIGURAÇÕES ===
+API_KEY = "e6962dcbc82c45bd89d9b773ad9820c0"  # sua chave Twelve Data
+SYMBOL = "EUR/USD"
+INTERVAL = "1min"
+TELEGRAM_TOKEN = "8033138211:AAFy57nWzcCiuCbT0u0hRHRhQIz_kmoipc0"  # coloque seu token aqui
 
-tempos_graficos = ["5s", "10s", "15s", "30s", "1m", "5m"]
+# === INICIALIZAÇÕES ===
+bot = telebot.TeleBot(TELEGRAM_TOKEN)
+subscribers = set()
+running = False
 
-def limpar():
-    os.system('cls' if os.name == 'nt' else 'clear')
+def get_candle():
+    url = f"https://api.twelvedata.com/time_series?symbol={SYMBOL}&interval={INTERVAL}&apikey={API_KEY}&outputsize=2"
+    try:
+        response = requests.get(url)
+        data = response.json()
+        candles = data["values"]
+        latest = candles[0]
+        return {
+            "datetime": latest["datetime"],
+            "open": float(latest["open"]),
+            "high": float(latest["high"]),
+            "low": float(latest["low"]),
+            "close": float(latest["close"]),
+        }
+    except Exception as e:
+        print("Erro ao buscar candle:", e)
+        return None
 
-def digitar(texto, vel=0.02):
-    for letra in texto:
-        print(letra, end='', flush=True)
-        time.sleep(vel)
+def calculate_ip(candle):
+    corpo = abs(candle["close"] - candle["open"])
+    pavio_sup = candle["high"] - max(candle["close"], candle["open"])
+    pavio_inf = min(candle["close"], candle["open"]) - candle["low"]
+    pavios = pavio_sup + pavio_inf
+    ip = corpo / pavios if pavios > 0 else 999
+    return round(ip, 2), corpo, pavios
 
-def progresso(texto, duracao=2):
-    digitar(texto)
-    for i in range(31):
-        sys.stdout.write(f"\r[{'█'*i}{' '*(30 - i)}] {int(i*(100/30))}%")
-        sys.stdout.flush()
-        time.sleep(duracao / 30)
-    print()
+def detectar_tendencia(candle):
+    return "CALL" if candle["close"] > candle["open"] else "PUT"
 
-def login_quotex(email, senha):
-    limpar()
-    progresso("Conectando ao servidor Quotex...\n", 2)
-    progresso("Validando dados de login...\n", 2)
-    digitar("\nConectado com sucesso!\n")
-    time.sleep(1)
-
-def exibir_saldo(saldo):
-    digitar(f"\nSaldo disponível: R${saldo:.2f}\n")
-    time.sleep(1)
-
-def menu_principal(saldo):
-    limpar()
-    exibir_saldo(saldo)
-    digitar("\nEscolha o método operacional:\n\n")
-    print("[1] Soros IA Ultra Quantum (Melhor de Todos)")
-    print("[2] Turbo Gale Pro")
-    print("[3] Fibonacci Xtreme")
-    print("[4] Martingale Precision")
-    print("[5] Velas Mágicas V3")
-    print("[6] RSI Supremo IA")
-    escolha = input("\nDigite a opção desejada: ")
-    return escolha
-
-def escolher_ativo():
-    limpar()
-    progresso("Carregando ativos disponíveis...\n", 2)
-    digitar("\nSelecione um ativo para operar:\n\n")
-    for num, ativo in enumerate(ativos, 1):
-        print(f"[{num}] {ativo}")
-    escolha = int(input("\nNúmero do ativo escolhido: "))
-    return ativos[escolha - 1]
-
-def escolher_tempo_grafico():
-    limpar()
-    progresso("Carregando tempos gráficos...\n", 2)
-    digitar("\nSelecione o tempo gráfico:\n\n")
-    for num, tempo in enumerate(tempos_graficos, 1):
-        print(f"[{num}] {tempo}")
-    escolha = int(input("\nNúmero do tempo gráfico escolhido: "))
-    return tempos_graficos[escolha - 1]
-
-def cronometro(segundos):
-    for i in range(segundos, 0, -1):
-        sys.stdout.write(f"\rTempo restante: {i}s ")
-        sys.stdout.flush()
-        time.sleep(1)
-    print("\rOperação encerrada!       ")
-
-def operar_soros_ia(saldo):
-    limpar()
-    ativo = escolher_ativo()
-    tempo_grafico = escolher_tempo_grafico()
-    perc = float(input("\nDigite o % da banca por operação: "))
-    saldo_atual = saldo
-    aposta = saldo_atual * (perc / 100)
-    resultados = []
-    limpar()
-    for rodada in range(1, 6):
-        direcao = random.choice(["CALL", "PUT"])
-        digitar(f"\nPreparando operação #{rodada} em {ativo} - {direcao}\n")
-        progresso("IA analisando mercado...\n", 2)
-        digitar("Operação aberta...\n")
-        seg = int(tempo_grafico.replace('s','').replace('m','')) * (60 if 'm' in tempo_grafico else 1)
-        cronometro(seg)
-        lucro = aposta * 0.93
-        saldo_atual += lucro
-        resultados.append(direcao)
-        digitar(f"\n✅ WIN em {ativo}!\n")
-        digitar(f"Valor apostado: R${aposta:.2f}\n")
-        digitar(f"Lucro obtido: R${lucro:.2f}\n")
-        digitar(f"Novo saldo: R${saldo_atual:.2f}\n")
-        aposta = saldo_atual * (perc / 100)
-        time.sleep(2)
-    digitar("\nSessão finalizada!\n")
-    digitar(f"Saldo final: R${saldo_atual:.2f}\n")
-    digitar("Resultados das operações:\n")
-    for idx, direcao in enumerate(resultados, 1):
-        digitar(f"Operação #{idx}: {direcao} ✅ WIN\n")
-
-def main():
-    limpar()
-    digitar("=== Quotex Ultra IA Trading Bot ===\n\n")
-    email = input("Email Quotex: ")
-    senha = input("Senha Quotex: ")
-    login_quotex(email, senha)
-    saldo_inicial = 50.81
-    escolha = menu_principal(saldo_inicial)
-    if escolha == "1":
-        operar_soros_ia(saldo_inicial)
+def gerar_sinal(ip, corpo, pavios, direcao):
+    if ip > 1.5 and corpo > pavios:
+        return f"FORTE CONTINUIDADE – ENTRADA: {direcao} (Expiração 10s)"
+    elif ip < 0.7 and pavios > corpo:
+        return f"REVERSÃO DETECTADA – ENTRADA: {'PUT' if direcao == 'CALL' else 'CALL'} (Expiração 10s)"
     else:
-        digitar("\nOpção em manutenção. Tente novamente mais tarde.\n")
+        return "Aguardar – Sem sinal claro para entrada segura."
 
-if __name__ == "__main__":
-    main()
+def formatar_mensagem(candle, ip, corpo, pavios, direcao, sinal):
+    return (
+        f"**SINAL GERADO** [{datetime.now().strftime('%H:%M:%S')}]\n"
+        f"Ativo: `{SYMBOL}`\n"
+        f"Data/Hora Candle: `{candle['datetime']}`\n"
+        f"Abertura: `{candle['open']}` | Fechamento: `{candle['close']}`\n"
+        f"Máxima: `{candle['high']}` | Mínima: `{candle['low']}`\n"
+        f"Corpo: `{round(corpo, 5)}` | Pavios: `{round(pavios, 5)}`\n"
+        f"Índice de Pressão (IP): `{ip}`\n"
+        f"Tendência do Candle: `{direcao}`\n"
+        f"\n**>> {sinal} <<**"
+    )
+
+def bot_worker():
+    global running
+    ultimo_candle = None
+
+    while running:
+        candle = get_candle()
+        if candle and candle != ultimo_candle:
+            ip, corpo, pavios = calculate_ip(candle)
+            direcao = detectar_tendencia(candle)
+            sinal = gerar_sinal(ip, corpo, pavios, direcao)
+            mensagem = formatar_mensagem(candle, ip, corpo, pavios, direcao, sinal)
+
+            for user_id in subscribers:
+                bot.send_message(user_id, mensagem, parse_mode="Markdown")
+            
+            ultimo_candle = candle
+        time.sleep(10)
+
+# === COMANDOS DO TELEGRAM ===
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    global running
+    user_id = message.chat.id
+    subscribers.add(user_id)
+    bot.reply_to(message, "Bot de sinais ativado! Você receberá alertas automaticamente.")
+    if not running:
+        running = True
+        threading.Thread(target=bot_worker).start()
+
+@bot.message_handler(commands=["stop"])
+def stop(message):
+    global running
+    running = False
+    bot.reply_to(message, "Bot pausado. Use /start para reativar.")
+
+@bot.message_handler(commands=["status"])
+def status(message):
+    msg = "Bot ativo e enviando sinais!" if running else "Bot está pausado. Use /start para ativar."
+    bot.reply_to(message, msg)
+
+# === INICIAR ===
+print("Bot Telegram iniciado.")
+bot.infinity_polling()
