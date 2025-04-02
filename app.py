@@ -5,7 +5,7 @@ import telebot
 from datetime import datetime
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 
-API_KEY = "e6962dcbc82c45bd89d9b773ad9820c0"
+API_KEY = "ba12a79bed074ef5a1ba2deb6bd5a710"
 SYMBOL = "EUR/USD"
 INTERVAL = "1min"
 TELEGRAM_TOKEN = "8033138211:AAFy57nWzcCiuCbT0u0hRHRhQIz_kmoipc0"
