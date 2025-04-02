@@ -11,9 +11,9 @@ TELEGRAM_TOKEN = "8033138211:AAFy57nWzcCiuCbT0u0hRHRhQIz_kmoipc0"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 subscribers = set()
-running = False
-win = 0
-loss = 0
+running = {}
+win = {}
+loss = {}
 stop_win = 5
 stop_loss = 3
 
@@ -48,8 +48,16 @@ def gerar_sinal(ip, corpo, pavios, direcao):
         return f"REVERSÃO TÁTICA – ENTRADA: {'PUT' if direcao == 'CALL' else 'CALL'} (Expiração 10s)"
     return "SEM SINAL – MERCADO NEUTRO"
 
-def formatar_msg(c, ip, corpo, pavios, direcao, sinal):
-    barra = gerar_barra_lucro()
+def gerar_barra(user_id):
+    w = win.get(user_id, 0)
+    l = loss.get(user_id, 0)
+    total = w + l if w + l > 0 else 1
+    taxa = int((w / total) * 10)
+    barra = "█" * taxa + "-" * (10 - taxa)
+    return f"Vitórias: {w} | Derrotas: {l}\nPrecisão: [{barra}] {int((w / total) * 100)}%"
+
+def formatar_msg(c, ip, corpo, pavios, direcao, sinal, user_id):
+    barra = gerar_barra(user_id)
     return (
         f"SINAL [{datetime.now().strftime('%H:%M:%S')}]\n"
         f"Ativo: {SYMBOL}\n"
@@ -60,71 +68,69 @@ def formatar_msg(c, ip, corpo, pavios, direcao, sinal):
         f"Tendência: {direcao}\n\n>> {sinal} <<\n\n{barra}"
     )
 
-def gerar_barra_lucro():
-    total = win + loss if (win + loss) > 0 else 1
-    taxa = int((win / total) * 10)
-    barra = "█" * taxa + "-" * (10 - taxa)
-    return f"Vitórias: {win} | Derrotas: {loss}\nPrecisão: [{barra}] {int((win / total) * 100)}%"
-
-def registrar_resultado(texto):
-    global win, loss
+def registrar_resultado(texto, user_id):
+    if user_id not in win: win[user_id] = 0
+    if user_id not in loss: loss[user_id] = 0
     if "win" in texto.lower():
-        win += 1
+        win[user_id] += 1
     elif "loss" in texto.lower():
-        loss += 1
+        loss[user_id] += 1
 
-def bot_worker():
-    global running
+def bot_worker(user_id):
     ultima = None
-    while running:
-        if win >= stop_win or loss >= stop_loss:
-            for u in subscribers:
-                bot.send_message(u, f"Gestão de risco atingida.\nVitórias: {win} | Derrotas: {loss}")
-            running = False
+    while running.get(user_id, False):
+        if win.get(user_id, 0) >= stop_win or loss.get(user_id, 0) >= stop_loss:
+            bot.send_message(user_id, f"Gestão atingida.\nVitórias: {win.get(user_id, 0)} | Derrotas: {loss.get(user_id, 0)}")
+            running[user_id] = False
             break
-        c = get_candle()
-        if c and c != ultima:
-            ip, corpo, pavios = calculate_ip(c)
-            d = detectar_tendencia(c)
-            s = gerar_sinal(ip, corpo, pavios, d)
-            msg = formatar_msg(c, ip, corpo, pavios, d, s)
-            if "ENTRADA" in s:
-                for u in subscribers:
-                    bot.send_message(u, msg)
-            ultima = c
+        try:
+            c = get_candle()
+            if c and c != ultima:
+                ip, corpo, pavios = calculate_ip(c)
+                d = detectar_tendencia(c)
+                s = gerar_sinal(ip, corpo, pavios, d)
+                msg = formatar_msg(c, ip, corpo, pavios, d, s, user_id)
+                if "ENTRADA" in s:
+                    bot.send_message(user_id, msg)
+                ultima = c
+        except:
+            pass
         time.sleep(10)
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    global running
     user_id = message.chat.id
     subscribers.add(user_id)
-    bot.send_message(user_id, "Bot ativo. Sinais com expiração de 10 segundos.")
-    if not running:
-        running = True
-        threading.Thread(target=bot_worker).start()
+    running[user_id] = True
+    win[user_id] = 0
+    loss[user_id] = 0
+    bot.send_message(user_id, "Bot ativado. Sinais com expiração de 10 segundos.")
+    threading.Thread(target=bot_worker, args=(user_id,)).start()
 
 @bot.message_handler(commands=["stop"])
 def stop(message):
-    global running
-    running = False
-    bot.send_message(message.chat.id, "Bot pausado.")
+    user_id = message.chat.id
+    running[user_id] = False
+    bot.send_message(user_id, "Bot pausado.")
 
 @bot.message_handler(commands=["status"])
 def status(message):
-    estado = "ativo" if running else "pausado"
-    barra = gerar_barra_lucro()
-    bot.send_message(message.chat.id, f"Status: {estado}\n{barra}")
+    user_id = message.chat.id
+    barra = gerar_barra(user_id)
+    ativo = running.get(user_id, False)
+    estado = "ativo" if ativo else "pausado"
+    bot.send_message(user_id, f"Status: {estado}\n{barra}")
 
 @bot.message_handler(commands=["reset"])
 def reset(message):
-    global win, loss
-    win = 0
-    loss = 0
-    bot.send_message(message.chat.id, "Estatísticas reiniciadas.")
+    user_id = message.chat.id
+    win[user_id] = 0
+    loss[user_id] = 0
+    bot.send_message(user_id, "Estatísticas zeradas.")
 
 @bot.message_handler(func=lambda m: True)
-def monitorar_resultado(message):
-    registrar_resultado(message.text)
+def resultado_manual(message):
+    user_id = message.chat.id
+    registrar_resultado(message.text, user_id)
 
 bot.infinity_polling()
