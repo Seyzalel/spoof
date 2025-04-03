@@ -1,5 +1,5 @@
 javascript:(function(){
-let v=50.81,ativo=false,conectado=false,wins=0,losses=0,f=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),u=(a,n)=>{document.querySelectorAll("*").forEach(e=>{if(e.children.length===0&&typeof e.innerText==="string"&&e.innerText.includes(a)){e.innerText=e.innerText.replace(a,n)}})};u("0.00",f(v));
+let v=50.81,ativo=false,conectado=false,wins=0,losses=0,f=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}),u=(a,n)=>{document.querySelectorAll("*").forEach(e=>{if(e.children.length===0&&typeof e.innerText==="string"&&e.innerText.includes(a)){e.innerText=e.innerText.replace(a,n)}})};u("0.58",f(v));
 let painel=document.createElement("div");
 painel.style.position="fixed";
 painel.style.bottom="80px";
@@ -48,15 +48,15 @@ function ciclo(){
 if(!ativo)return;
 setTimeout(()=>{
 if(!ativo)return;
-let aposta=v*0.3,restante=v-aposta;
+let aposta=v*0.1,restante=v-aposta;
 u(f(v),f(restante));
-document.getElementById("status").innerText="Apostando 30% da banca...";
+document.getElementById("status").innerText="Apostando 10% da banca...";
 setTimeout(()=>{
 if(!ativo)return;
 v=restante+aposta*1.91;
 u(f(restante),f(v));
 wins++;atualizaWL();
-document.getElementById("status").innerText="Retorno automático: +"+f(aposta*0.91);
+document.getElementById("status").innerText="Ganho total: +R$"+f(aposta*0.91);
 ciclo();
 },6000);
 },10000);
