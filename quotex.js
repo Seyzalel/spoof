@@ -1,5 +1,5 @@
 javascript:(function(){
-let v=30.48;let ativo=false;let conectado=false;let wins=0;let losses=0;const f=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});const u=(a,n)=>{document.querySelectorAll("*").forEach(e=>{if(e.children.length===0&&typeof e.innerText==="string"&&e.innerText.includes(a)){e.innerText=e.innerText.replace(a,n)}})};function showAttractiveGain(a){let d=document.createElement("div");d.style.position="fixed";d.style.top="10px";d.style.left="50%";d.style.transform="translateX(-50%)";d.style.zIndex="9999999";d.style.padding="14px 20px";d.style.borderRadius="14px";d.style.fontFamily="sans-serif";d.style.fontSize="14px";d.style.fontWeight="600";d.style.color="#fff";d.style.background="linear-gradient(135deg,#ff00c8,#9f00ff)";d.style.boxShadow="0 8px 24px rgba(0,0,0,0.8)";d.style.opacity="0";d.style.transition="opacity 0.5s";d.innerText="GANHO: +"+f(a*0.93);document.body.appendChild(d);setTimeout(function(){d.style.opacity="1"},50);setTimeout(function(){d.style.opacity="0";setTimeout(function(){if(d.parentNode){d.parentNode.removeChild(d)}},500)},3000)}
+let v=491.13;let ativo=false;let conectado=false;let wins=0;let losses=0;const f=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});const u=(a,n)=>{document.querySelectorAll("*").forEach(e=>{if(e.children.length===0&&typeof e.innerText==="string"&&e.innerText.includes(a)){e.innerText=e.innerText.replace(a,n)}})};function showAttractiveGain(a){let d=document.createElement("div");d.style.position="fixed";d.style.top="10px";d.style.left="50%";d.style.transform="translateX(-50%)";d.style.zIndex="9999999";d.style.padding="14px 20px";d.style.borderRadius="14px";d.style.fontFamily="sans-serif";d.style.fontSize="14px";d.style.fontWeight="600";d.style.color="#fff";d.style.background="linear-gradient(135deg,#ff00c8,#9f00ff)";d.style.boxShadow="0 8px 24px rgba(0,0,0,0.8)";d.style.opacity="0";d.style.transition="opacity 0.5s";d.innerText="GANHO: +"+f(a*0.93);document.body.appendChild(d);setTimeout(function(){d.style.opacity="1"},50);setTimeout(function(){d.style.opacity="0";setTimeout(function(){if(d.parentNode){d.parentNode.removeChild(d)}},500)},3000)}
 function atualizaWL(){document.getElementById("winLoss").innerText="WIN: "+wins+" | LOSS: "+losses}
 function ciclo(){
 if(!ativo)return;
@@ -11,7 +11,7 @@ document.getElementById("status").innerText="Apostando 20% da banca...";
 setTimeout(()=>{
 if(!ativo)return;
 let chance=Math.random();
-if(chance<0.25){
+if(chance<0.20){
 v=restante;losses++;atualizaWL();
 u(f(restante),f(v));
 document.getElementById("status").innerText="Perda total: -"+f(aposta);
