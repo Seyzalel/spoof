@@ -1,6 +1,6 @@
 javascript:(function(){
     const valorTotal = 8927.36;
-    const qtdVendasPainel = 597;
+    const qtdVendasPainel = 42;
     const valorTopo = 'R$ 8.927,36';
     const progresso = '89.27%';
     const meta = 'R$ 8.9K / R$ 10K';
@@ -45,7 +45,6 @@ javascript:(function(){
 
         const produtosComPrecos = [
             { nome: 'PACK COMPLETO', preco: 22.20 },
-            { nome: 'Método Influência Milionária', preco: 74.10 },
             { nome: 'Design de Rótulos', preco: 120.00 },
             { nome: 'GOLDENFLIX', preco: 137.90 },
             { nome: 'Método Gringa Turbo', preco: 248.50 },
