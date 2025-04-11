@@ -1,6 +1,6 @@
 javascript:(function(){
     const valorTotal = 8927.36;
-    const qtdVendas = 597;
+    const qtdVendasPainel = 597;
     const valorTopo = 'R$ 8.927,36';
     const progresso = '89.27%';
     const meta = 'R$ 8.9K / R$ 10K';
@@ -8,7 +8,7 @@ javascript:(function(){
     document.querySelectorAll('*').forEach(function(el) {
         if (el.children.length === 0 && el.innerText !== undefined) {
             if (el.innerText.includes('R$ 0,00')) el.innerText = valorTopo;
-            if (el.innerText.trim() === '0') el.innerText = qtdVendas.toString();
+            if (el.innerText.trim() === '0') el.innerText = qtdVendasPainel.toString();
             if (el.innerText.includes('R$ 0K / R$ 10K')) el.innerText = meta;
         }
     });
@@ -30,32 +30,59 @@ javascript:(function(){
             corpo.innerHTML = '';
         }
 
-        const nomes = ['Enzo Gabriel', 'Valentina Rocha', 'Theo Almeida', 'Sophia Martins', 'Gael Henrique', 'Helena Farias', 'Miguel Souza', 'Manuela Ribeiro', 'Davi Lucca', 'Isabela Nunes', 'Noah Fernandes', 'Laura Teixeira', 'Lorenzo Prado', 'Cecília Dias', 'Benício Gomes', 'Heloísa Carvalho', 'Isaac Monteiro', 'Antonella Silva', 'Levi Castro', 'Liz Rocha', 'Alice Barbosa', 'Otávio Ramos', 'Emanuel Duarte', 'Luna Moreira', 'Zoe Costa', 'Henrique Beltrão', 'Clara Santana', 'Yasmin Torres'];
-        const produtos = ['Curso Completo', 'Mentoria Premium', 'E-book Digital PRO', 'Pack Estratégico 2025', 'Acesso VIP'];
+        const nomesModernos2025 = [
+            'Enzo Gabriel', 'Valentina Rocha', 'Theo Almeida', 'Sophia Martins', 'Gael Henrique',
+            'Helena Farias', 'Noah Fernandes', 'Laura Teixeira', 'Miguel Souza', 'Luna Moreira',
+            'Davi Lucca', 'Isabela Nunes', 'Benício Gomes', 'Heloísa Carvalho', 'Levi Castro',
+            'Liz Rocha', 'Alice Barbosa', 'Otávio Ramos', 'Emanuel Duarte', 'Cecília Dias',
+            'Antonella Silva', 'Zoe Santana', 'Ravi Costa', 'Aurora Fernandes', 'Lorenzo Prado',
+            'Eloá Monteiro', 'Calebe Ribeiro', 'Isis Moura', 'Henry Nogueira', 'Mel Andrade',
+            'Yuri Rocha', 'Rebeca Luz', 'Gael Oliveira', 'Ayla Cardoso', 'João Lucas Freitas',
+            'Maite Carvalho', 'Rael Dias', 'Yasmin Torres', 'Samuel Bernardes', 'Esther Azevedo',
+            'Bryan Moreira', 'Bella Mello', 'Pietro Sales', 'Maya Rezende', 'Lucca Pinheiro',
+            'Aurora Lima', 'Benjamin Correia', 'Antonny Melo', 'Milena Soares', 'Emanuelly Ribeiro'
+        ];
 
-        const valores = [];
-        let total = 0;
-        while (valores.length < qtdVendas - 1) {
-            const v = (Math.random() * 100 + 50).toFixed(2);
-            total += parseFloat(v);
-            valores.push(parseFloat(v));
-        }
-        valores.push(parseFloat((valorTotal - total).toFixed(2)));
+        const produtosComPrecos = [
+            { nome: 'PACK COMPLETO', preco: 22.20 },
+            { nome: 'Método Influência Milionária', preco: 74.10 },
+            { nome: 'Design de Rótulos', preco: 120.00 },
+            { nome: 'GOLDENFLIX', preco: 137.90 },
+            { nome: 'Método Gringa Turbo', preco: 248.50 },
+            { nome: 'Sistema Viral', preco: 137.90 }
+        ];
 
         const now = new Date();
-        for (let i = 0; i < qtdVendas; i++) {
-            const minutosRand = Math.floor(Math.random() * 45) + 1;
-            const dataVenda = new Date(now.getTime() - i * minutosRand * 60000);
+        let vendas = [];
+        let total = 0;
+
+        while (total < valorTotal) {
+            const p = produtosComPrecos[Math.floor(Math.random() * produtosComPrecos.length)];
+            if (total + p.preco > valorTotal) break;
+            total += p.preco;
+            vendas.push(p);
+        }
+
+        vendas = vendas.slice(-10);
+
+        let nomesSorteados = [];
+        while (nomesSorteados.length < 10) {
+            const nome = nomesModernos2025[Math.floor(Math.random() * nomesModernos2025.length)];
+            if (!nomesSorteados.includes(nome)) nomesSorteados.push(nome);
+        }
+
+        for (let i = 0; i < vendas.length; i++) {
+            const dataVenda = new Date(now.getTime() - i * (Math.floor(Math.random() * 45) + 1) * 60000);
             const dataStr = dataVenda.toLocaleDateString('pt-BR');
             const horaStr = dataVenda.toTimeString().slice(0,5);
-            const produto = produtos[Math.floor(Math.random() * produtos.length)];
-            const cliente = nomes[Math.floor(Math.random() * nomes.length)];
-            const valor = valores[i].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const produto = vendas[i];
+            const cliente = nomesSorteados[i];
+            const valor = produto.preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             const linha = document.createElement('tr');
             linha.innerHTML = `
                 <td style="font-size:14px; padding: 12px;">${dataStr}<br><span style="font-size:12px; color:#666;">${horaStr}</span></td>
-                <td style="font-size:14px; padding: 12px;">${produto}</td>
+                <td style="font-size:14px; padding: 12px;">${produto.nome}</td>
                 <td style="font-size:14px; padding: 12px;">${cliente}</td>
                 <td style="font-size:14px; padding: 12px;">
                     <div style="display:inline-block; background:rgba(0,128,0,0.1); color:#008000; font-weight:600; padding:2px 6px; border-radius:4px;">Pago</div><br>
