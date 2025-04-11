@@ -6,89 +6,84 @@ from datetime import datetime, timedelta
 def limpar():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def gerar_horarios(qtd_eventos):
+def gerar_horarios_em_ordem(qtd):
     agora = datetime.now()
+    base_minutos = random.randint(180, 360)
     horarios = []
-    for _ in range(qtd_eventos):
-        atraso = random.randint(180, 360)
-        horario = agora - timedelta(minutes=atraso)
+    for i in range(qtd):
+        minutos_atras = base_minutos - (qtd - i)
+        horario = agora - timedelta(minutes=minutos_atras)
         horarios.append(horario)
-    horarios.sort()
     return horarios
 
-def animacao_inicial(texto, duracao=1.2):
-    etapas = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷']
-    for _ in range(8):
+def animacao(titulo, duracao=0.9):
+    etapas = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏']
+    for _ in range(12):
         for etapa in etapas:
-            print(f'\r{texto} {etapa}', end='', flush=True)
+            print(f'\r{titulo} {etapa}', end='', flush=True)
             time.sleep(duracao / len(etapas))
     print()
 
-def executar_simulacao():
+def executar_registro():
     limpar()
     print("╭────────────────────────────────────────────────────────────╮")
-    print("│              Painel Automático De Conversão 2025          │")
+    print("│             Relatório De Execução — Sistema K             │")
     print("╰────────────────────────────────────────────────────────────╯\n")
-    
-    animacao_inicial("Inicializando Ambiente Inteligente")
-    print("\nGerando sequência de eventos...\n")
-    time.sleep(1)
 
-    total_eventos = random.randint(25, 60)
+    animacao("Acessando registros do monitoramento")
+    time.sleep(0.7)
+
+    total_eventos = random.randint(28, 54)
     total_vendas = random.randint(5, 19)
-    total_leads = random.randint(7, 15)
-    total_cliques = total_eventos - (total_vendas + total_leads)
+    total_leads = random.randint(6, 14)
+    total_cliques = total_eventos - total_vendas - total_leads
 
     eventos = []
-    horarios = gerar_horarios(total_eventos)
+    horarios = gerar_horarios_em_ordem(total_eventos)
+    tipos = (["venda"] * total_vendas) + (["lead"] * total_leads) + (["clique"] * total_cliques)
+    random.shuffle(tipos)
 
     for i in range(total_eventos):
-        if total_vendas > 0:
-            tipo = "venda"
-            total_vendas -= 1
-        elif total_leads > 0:
-            tipo = "lead"
-            total_leads -= 1
-        else:
-            tipo = "clique"
-            total_cliques -= 1
-
-        eventos.append((horarios[i], tipo))
-
+        eventos.append((horarios[i], tipos[i]))
     eventos.sort()
 
-    valor_por_venda = 137.90
-    vendas_realizadas = 0
+    print("Monitoramento iniciado anteriormente foi registrado com sucesso.\n")
+    time.sleep(1.1)
+
+    vendas_registradas = 0
+    valor_unitario = 137.90
 
     for horario, tipo in eventos:
-        hora_formatada = horario.strftime("%H:%M:%S")
+        hora = horario.strftime("%H:%M:%S")
         if tipo == "clique":
-            print(f"[{hora_formatada}] Clique detectado.")
+            print(f"[{hora}] Clique recebido no link afiliado.")
         elif tipo == "lead":
-            print(f"[{hora_formatada}] Lead qualificado identificado.")
+            print(f"[{hora}] Lead qualificado detectado durante a campanha.")
         elif tipo == "venda":
-            print(f"[{hora_formatada}] Venda confirmada — Comissão: R$ 137,90 — Produto: Sistema Viral")
-            vendas_realizadas += 1
+            print(f"[{hora}] Venda confirmada — Comissão registrada: R$ 137,90 — Produto: Sistema Viral")
+            vendas_registradas += 1
         time.sleep(0.15)
 
-    lucro_total = vendas_realizadas * valor_por_venda
-    taxa_conversao = (vendas_realizadas / total_eventos) * 100
+    cliques_total = len([e for e in eventos if e[1] == "clique"])
+    leads_total = len([e for e in eventos if e[1] == "lead"])
+    lucro_total = vendas_registradas * valor_unitario
+    taxa_conversao = (vendas_registradas / total_eventos) * 100
 
-    print("\nProcesso finalizado com sucesso.\n")
-    time.sleep(1)
-
+    time.sleep(1.3)
+    print("\nResumo do monitoramento encerrado:\n")
     print("╭──────────────────────────────────────────────────────╮")
-    print("│                   Relatório Final                   │")
+    print("│                   Detalhes Da Operação               │")
     print("╰──────────────────────────────────────────────────────╯\n")
-    print(f"Total de Eventos Monitorados: {len(eventos)}")
-    print(f"Total de Cliques: {len([e for e in eventos if e[1] == 'clique'])}")
-    print(f"Total de Leads Qualificados: {len([e for e in eventos if e[1] == 'lead'])}")
-    print(f"Total de Vendas: {vendas_realizadas}")
-    print(f"Produto Monitorado: Sistema Viral")
-    print(f"Comissão por Venda: R$ 137,90")
+    print(f"Eventos Registrados: {total_eventos}")
+    print(f"Cliques Validados: {cliques_total}")
+    print(f"Leads Qualificados: {leads_total}")
+    print(f"Vendas Confirmadas: {vendas_registradas}")
+    print(f"Produto Monitornado: Sistema Viral")
+    print(f"Comissão Por Venda: R$ 137,90")
     print(f"Lucro Total: R$ {lucro_total:,.2f}")
-    print(f"Taxa de Conversão: {taxa_conversao:.2f}%\n")
-    print("Painel finalizado. Dados simulados com sucesso.")
+    print(f"Taxa De Conversão: {taxa_conversao:.2f}%\n")
+    print("O bot encerrou sua execução após cumprir totalmente o objetivo proposto.")
+    print("Todos os registros foram salvos e analisados com êxito.")
 
 if __name__ == "__main__":
-    executar_simulacao()
+    executar_registro()
