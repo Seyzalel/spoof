@@ -31,15 +31,15 @@ javascript:(function(){
         }
 
         const nomes = [
-            'Enzo Gabriel', 'Valentina Rocha', 'Theo Almeida', 'Sophia Martins', 'Gael Henrique',
-            'Helena Farias', 'Noah Fernandes', 'Laura Teixeira', 'Miguel Souza', 'Luna Moreira',
-            'Davi Lucca', 'Isabela Nunes', 'Levi Castro', 'Alice Barbosa', 'Aurora Lima'
+            'Aurora Lima', 'Alice Barbosa', 'Levi Castro', 'Isabela Nunes', 'Davi Lucca',
+            'Luna Moreira', 'Miguel Souza', 'Laura Teixeira', 'Noah Fernandes', 'Helena Farias',
+            'Gael Henrique', 'Sophia Martins', 'Theo Almeida', 'Valentina Rocha', 'Enzo Gabriel'
         ];
 
         const horarios = [
-            '13:43:25', '13:45:25', '13:56:25', '14:10:25', '14:21:25',
-            '14:32:25', '14:34:25', '14:37:25', '14:38:25', '14:52:25',
-            '14:53:25', '14:54:25', '15:23:25', '15:56:25', '16:00:25'
+            '16:00:25', '15:56:25', '15:23:25', '14:54:25', '14:53:25',
+            '14:52:25', '14:38:25', '14:37:25', '14:34:25', '14:32:25',
+            '14:21:25', '14:10:25', '13:56:25', '13:45:25', '13:43:25'
         ];
 
         const now = new Date();
