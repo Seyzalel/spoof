@@ -1,92 +1,94 @@
 import time
 import random
 import os
-import sys
 from datetime import datetime, timedelta
-
-plataformas = [
-    "1. Kiwify (recomendado)",
-    "2. Kirvano",
-    "3. Braip",
-    "4. Eduzz",
-    "5. Hotmart",
-    "6. Monetizze"
-]
 
 def limpar():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def animacao(texto, duracao=1.2):
+def gerar_horarios(qtd_eventos):
+    agora = datetime.now()
+    horarios = []
+    for _ in range(qtd_eventos):
+        atraso = random.randint(180, 360)
+        horario = agora - timedelta(minutes=atraso)
+        horarios.append(horario)
+    horarios.sort()
+    return horarios
+
+def animacao_inicial(texto, duracao=1.2):
     etapas = ['⣾', '⣽', '⣻', '⢿', '⡿', '⣟', '⣯', '⣷']
-    for _ in range(10):
+    for _ in range(8):
         for etapa in etapas:
-            sys.stdout.write(f'\r{texto} {etapa}')
-            sys.stdout.flush()
+            print(f'\r{texto} {etapa}', end='', flush=True)
             time.sleep(duracao / len(etapas))
     print()
 
-def exibir_vendas_passadas():
-    print("\nCarregando histórico recente de transações...\n")
-    vendas = []
-    agora = datetime.now()
-    for i in range(9):
-        atraso = random.randint(240, 360)
-        horario = agora - timedelta(minutes=atraso - (i * 2))
-        vendas.append(horario.strftime("%H:%M:%S"))
-    for idx, hora in enumerate(vendas, 1):
-        print(f"[{hora}] Venda {idx} confirmada — produto: Sistema Viral — comissão recebida: R$ 137,90")
-        time.sleep(0.3)
-    print("\nResumo das últimas conversões:")
-    print("Total de vendas identificadas: 9")
-    print("Total em comissões recebidas: R$ 1.241,10")
-    print("Produto monitorado: Sistema Viral")
-    print("-" * 55)
-    time.sleep(1)
-
-def evento_ao_vivo():
-    tipo = random.choices(["clique", "lead", "venda"], weights=[60, 30, 10])[0]
-    hora = time.strftime('%H:%M:%S')
-    if tipo == "clique":
-        print(f"[{hora}] Novo clique registrado.")
-    elif tipo == "lead":
-        print(f"[{hora}] Lead qualificado detectado.")
-    elif tipo == "venda":
-        print(f"[{hora}] Nova conversão — comissão: R$ 137,90 — produto: Sistema Viral")
-
-def monitorar():
-    print("\nO sistema está agora em modo de monitoramento inteligente.")
-    print("Aguardando novos cliques em tempo real...")
-    print("Impulsionando estrategicamente o link de afiliado para maximizar a taxa de conversão.")
-    print("Analisando o comportamento do público e ajustando o alcance dinâmico para aumentar a performance.\n")
-    time.sleep(2)
-    while True:
-        evento_ao_vivo()
-        time.sleep(random.uniform(1.7, 4.0))
-
-def main():
+def executar_simulacao():
     limpar()
     print("╭────────────────────────────────────────────────────────────╮")
-    print("│           Painel de performance — ambiente profissional    │")
-    print("╰────────────────────────────────────────────────────────────╯")
-    print("\nSelecione a plataforma a ser monitorada:\n")
-    for plataforma in plataformas:
-        print(plataforma)
-    escolha = input("\nDigite o número da plataforma: ").strip()
-    if escolha not in [str(i) for i in range(1, len(plataformas) + 1)]:
-        print("\nEntrada inválida. Encerrando...\n")
-        return
-    plataforma_nome = plataformas[int(escolha) - 1][3:]
-    print(f"\nPlataforma selecionada: {plataforma_nome}")
-    url = input("Cole o link do seu afiliado: ").strip()
-    if not url.startswith("http"):
-        print("\nLink inválido. Encerrando...\n")
-        return
-    print("\nIniciando leitura do ambiente...\n")
-    animacao("Validando link de rastreamento")
-    animacao("Sincronizando métricas com a rede")
-    exibir_vendas_passadas()
-    animacao("Configurando impulsionamento inteligente")
-    monitorar()
+    print("│              Painel Automático De Conversão 2025          │")
+    print("╰────────────────────────────────────────────────────────────╯\n")
+    
+    animacao_inicial("Inicializando Ambiente Inteligente")
+    print("\nGerando sequência de eventos...\n")
+    time.sleep(1)
+
+    total_eventos = random.randint(25, 60)
+    total_vendas = random.randint(5, 19)
+    total_leads = random.randint(7, 15)
+    total_cliques = total_eventos - (total_vendas + total_leads)
+
+    eventos = []
+    horarios = gerar_horarios(total_eventos)
+
+    for i in range(total_eventos):
+        if total_vendas > 0:
+            tipo = "venda"
+            total_vendas -= 1
+        elif total_leads > 0:
+            tipo = "lead"
+            total_leads -= 1
+        else:
+            tipo = "clique"
+            total_cliques -= 1
+
+        eventos.append((horarios[i], tipo))
+
+    eventos.sort()
+
+    valor_por_venda = 137.90
+    vendas_realizadas = 0
+
+    for horario, tipo in eventos:
+        hora_formatada = horario.strftime("%H:%M:%S")
+        if tipo == "clique":
+            print(f"[{hora_formatada}] Clique detectado.")
+        elif tipo == "lead":
+            print(f"[{hora_formatada}] Lead qualificado identificado.")
+        elif tipo == "venda":
+            print(f"[{hora_formatada}] Venda confirmada — Comissão: R$ 137,90 — Produto: Sistema Viral")
+            vendas_realizadas += 1
+        time.sleep(0.15)
+
+    lucro_total = vendas_realizadas * valor_por_venda
+    taxa_conversao = (vendas_realizadas / total_eventos) * 100
+
+    print("\nProcesso finalizado com sucesso.\n")
+    time.sleep(1)
+
+    print("╭──────────────────────────────────────────────────────╮")
+    print("│                   Relatório Final                   │")
+    print("╰──────────────────────────────────────────────────────╯\n")
+    print(f"Total de Eventos Monitorados: {len(eventos)}")
+    print(f"Total de Cliques: {len([e for e in eventos if e[1] == 'clique'])}")
+    print(f"Total de Leads Qualificados: {len([e for e in eventos if e[1] == 'lead'])}")
+    print(f"Total de Vendas: {vendas_realizadas}")
+    print(f"Produto Monitorado: Sistema Viral")
+    print(f"Comissão por Venda: R$ 137,90")
+    print(f"Lucro Total: R$ {lucro_total:,.2f}")
+    print(f"Taxa de Conversão: {taxa_conversao:.2f}%\n")
+    print("Painel finalizado. Dados simulados com sucesso.")
 
 if __name__ == "__main__":
-    main()
+    executar_simulacao()
