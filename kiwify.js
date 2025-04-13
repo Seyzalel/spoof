@@ -1,15 +1,15 @@
 javascript:(function(){
-    const valorTotal = 827.40;
-    const qtdVendasPainel = 6;
-    const valorTopo = 'R$ 827,40';
-    const progresso = '8.27%';
-    const meta = 'R$ 0.8K / R$ 10K';
+    const valorTotal = 1103.20;
+    const qtdVendasPainel = 8;
+    const valorTopo = 'R$ 1.103,20';
+    const progresso = '11.03%';
+    const meta = 'R$ 1.1K / R$ 10K';
 
     document.querySelectorAll('*').forEach(function(el) {
         if (el.children.length === 0 && el.innerText !== undefined) {
             if (el.innerText.includes('R$ 0,00')) el.innerText = valorTopo;
             if (el.innerText.trim() === '0') el.innerText = qtdVendasPainel.toString();
-            if (el.innerText.includes('R$ 0K / R$ 10K')) el.innerText = meta;
+            if (el.innerText.includes('R$ 0K / R$ 10K') || el.innerText.includes('R$ 0K / R$ 0K')) el.innerText = meta;
         }
     });
 
@@ -31,13 +31,15 @@ javascript:(function(){
         }
 
         const nomes = [
-            'Giovana Lima', 'Eduardo Soares', 'Yasmin Rodrigues',
-            'Felipe Cunha', 'Bruna Oliveira', 'Lucas Machado'
+            'Luan Fernandes', 'Isabella Martins', 'Theo Almeida',
+            'Laura Ribeiro', 'Matheus Lima', 'Gabriela Castro',
+            'Enzo Duarte', 'Manuela Cardoso'
         ];
 
         const horarios = [
-            '18:49', '18:46', '18:45',
-            '18:27', '18:18', '18:09'
+            '19:27', '19:26', '19:10',
+            '18:59', '18:57', '18:53',
+            '18:42', '18:29'
         ];
 
         const now = new Date();
