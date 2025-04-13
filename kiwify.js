@@ -1,9 +1,9 @@
 javascript:(function(){
-    const valorTotal = 1241.10;
-    const qtdVendasPainel = 9;
-    const valorTopo = 'R$ 1.241,10';
-    const progresso = '12.41%';
-    const meta = 'R$ 1.2K / R$ 10K';
+    const valorTotal = 827.40;
+    const qtdVendasPainel = 6;
+    const valorTopo = 'R$ 827,40';
+    const progresso = '70.24%';
+    const meta = 'R$ 7.0K / R$ 10K';
 
     document.querySelectorAll('*').forEach(function(el) {
         if (el.children.length === 0 && el.innerText !== undefined) {
@@ -31,26 +31,26 @@ javascript:(function(){
         }
 
         const nomes = [
-            'Otávio Bernardes', 'Melissa Duarte', 'Ícaro Sanches', 'Lívia Peixoto',
-            'Eduardo Moura', 'Giovana Maciel', 'Tainá Silveira', 'Nathan Prado', 'Bianca Rezende'
+            'Nicole Andrade', 'Bruno Tavares', 'Larissa Monteiro',
+            'Matheus Xavier', 'Camila Bastos', 'João Felipe'
         ];
 
         const horarios = [
-            '09:41:30', '09:38:30', '09:32:30', '09:19:30', '09:08:30',
-            '09:05:30', '08:47:30', '08:46:30', '08:17:30'
+            '18:49:34', '18:46:34', '18:45:34',
+            '18:27:34', '18:18:34', '18:09:34'
         ];
 
         const now = new Date();
         const dataHoje = now.toLocaleDateString('pt-BR');
 
         for (let i = 0; i < horarios.length; i++) {
-            const horaStr = horarios[i];
+            const horaMinuto = horarios[i].slice(0,5);
             const cliente = nomes[i];
             const valor = (137.90).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
             const linha = document.createElement('tr');
             linha.innerHTML = `
-                <td style="font-size:14px; padding: 12px;">${dataHoje}<br><span style="font-size:12px; color:#666;">${horaStr}</span></td>
+                <td style="font-size:14px; padding: 12px;">${dataHoje}<br><span style="font-size:12px; color:#666;">${horaMinuto}</span></td>
                 <td style="font-size:14px; padding: 12px;">Sistema Viral</td>
                 <td style="font-size:14px; padding: 12px;">${cliente}</td>
                 <td style="font-size:14px; padding: 12px;">
