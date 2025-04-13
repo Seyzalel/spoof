@@ -2,8 +2,8 @@ javascript:(function(){
     const valorTotal = 827.40;
     const qtdVendasPainel = 6;
     const valorTopo = 'R$ 827,40';
-    const progresso = '70.24%';
-    const meta = 'R$ 7.0K / R$ 10K';
+    const progresso = '8.27%';
+    const meta = 'R$ 0.8K / R$ 10K';
 
     document.querySelectorAll('*').forEach(function(el) {
         if (el.children.length === 0 && el.innerText !== undefined) {
