@@ -31,20 +31,20 @@ javascript:(function(){
         }
 
         const nomes = [
-            'Nicole Andrade', 'Bruno Tavares', 'Larissa Monteiro',
-            'Matheus Xavier', 'Camila Bastos', 'João Felipe'
+            'Giovana Lima', 'Eduardo Soares', 'Yasmin Rodrigues',
+            'Felipe Cunha', 'Bruna Oliveira', 'Lucas Machado'
         ];
 
         const horarios = [
-            '18:49:34', '18:46:34', '18:45:34',
-            '18:27:34', '18:18:34', '18:09:34'
+            '18:49', '18:46', '18:45',
+            '18:27', '18:18', '18:09'
         ];
 
         const now = new Date();
         const dataHoje = now.toLocaleDateString('pt-BR');
 
         for (let i = 0; i < horarios.length; i++) {
-            const horaMinuto = horarios[i].slice(0,5);
+            const horaMinuto = horarios[i];
             const cliente = nomes[i];
             const valor = (137.90).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
