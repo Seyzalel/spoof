@@ -1,4 +1,4 @@
-(javascript:function(){
+javascript:(function(){
     const valorTotal = 1930.60;
     const qtdVendasPainel = 14;
     const valorTopo = 'R$ 1.930,60';
