@@ -3,7 +3,7 @@ javascript:(function(){
     const qtdVendasPainel = 7;
     const valorTopo = 'R$ 965,30';
     const progresso = '9.65%';
-    const meta = 'R$ 965 / R$ 10K';
+    const meta = 'R$ 0.9K / R$ 10K';
 
     document.querySelectorAll('*').forEach(function(el) {
         if (el.children.length === 0 && el.innerText !== undefined) {
