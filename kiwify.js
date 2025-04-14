@@ -53,7 +53,7 @@ javascript:(function(){
             const linha = document.createElement('tr');
             linha.innerHTML = `
                 <td style="font-size:14px; padding: 12px;">${dataHoje}<br><span style="font-size:12px; color:#666;">${horaMinuto}</span></td>
-                <td style="font-size:14px; padding: 12px;">MAPA DA PROSPERIDADE</td>
+                <td style="font-size:14px; padding: 12px; max-width:150px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">MAPA DA PROSPERIDADE</td>
                 <td style="font-size:14px; padding: 12px;">${cliente}</td>
                 <td style="font-size:14px; padding: 12px;">
                     <div style="display:inline-block; background:rgba(0,128,0,0.1); color:#008000; font-weight:600; padding:2px 6px; border-radius:4px;">Pago</div><br>
